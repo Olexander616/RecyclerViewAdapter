@@ -3,12 +3,15 @@ package com.example.recyclerviewadapter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.text.FieldPosition
 
 class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView : RecyclerView
     private lateinit var adapter : ItemAdapter
+    private lateinit var itemList: List<ItemData>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,13 +24,28 @@ class MainActivity : AppCompatActivity() {
 //        // Add more items as needed
 //    )
 
-    val itemList = generateListOf100Elements()
+    itemList = generateListOf100Elements()
+   // adapter = ItemAdapter(this, {position ->  })
 
     recyclerView = findViewById(R.id.my_recycleView)
-    adapter = ItemAdapter(this, itemList)
+    adapter = ItemAdapter(this,
+        {position -> showTost(position) },
+        {position ->
+        deleteItem(position)
+    })
     recyclerView.layoutManager = LinearLayoutManager(this)
     recyclerView.adapter = adapter
+        adapter.updateList(itemList)
 }
+    private fun showTost(position: Int){
+        Toast.makeText(this, "Cleked on image ${position}", Toast.LENGTH_SHORT).show()
+    }
+    private fun deleteItem(position: Int){
+        val updateList = itemList.toMutableList()
+        updateList.removeAt(position)
+        adapter.updateList(updateList)
+        //adapter.notifyDataSetChanged()
+    }
 }
 
 fun generateListOf100Elements(): List<ItemData> {

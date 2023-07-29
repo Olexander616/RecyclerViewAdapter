@@ -1,5 +1,6 @@
 package com.example.recyclerviewadapter
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.LinearLayout
@@ -13,6 +14,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter : ItemAdapter
     private lateinit var itemList: List<ItemData>
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -38,12 +40,13 @@ class MainActivity : AppCompatActivity() {
         adapter.updateList(itemList)
 }
     private fun showTost(position: Int){
-        Toast.makeText(this, "Cleked on image ${position}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Clicked on image ${position}", Toast.LENGTH_SHORT).show()
     }
     private fun deleteItem(position: Int){
         val updateList = itemList.toMutableList()
         updateList.removeAt(position)
-        adapter.updateList(updateList)
+        this.itemList = updateList
+        adapter.updateListWithRemovePosition(updateList,position)
         //adapter.notifyDataSetChanged()
     }
 }

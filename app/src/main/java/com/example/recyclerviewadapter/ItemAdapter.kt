@@ -21,6 +21,11 @@ class ItemAdapter(private val context: Context,
         notifyDataSetChanged()
     }
 
+    fun updateListWithRemovePosition(items: List<ItemData>, position: Int){
+        this.itemList = itemList
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position,itemCount)
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)

@@ -37,7 +37,8 @@ class MainActivity : AppCompatActivity() {
     })
     recyclerView.layoutManager = LinearLayoutManager(this)
     recyclerView.adapter = adapter
-        adapter.updateList(itemList)
+        //adapter.updateList(itemList)
+        adapter.submitList(itemList)
 }
     private fun showTost(position: Int){
         Toast.makeText(this, "Clicked on image ${position}", Toast.LENGTH_SHORT).show()
@@ -46,8 +47,9 @@ class MainActivity : AppCompatActivity() {
         val updateList = itemList.toMutableList()
         updateList.removeAt(position)
         this.itemList = updateList
-        adapter.updateListWithRemovePosition(updateList,position)
+        //adapter.updateListWithRemovePosition(updateList,position)
         //adapter.notifyDataSetChanged()
+        adapter.submitList(itemList)
     }
 }
 

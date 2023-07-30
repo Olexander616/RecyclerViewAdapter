@@ -6,29 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ListAdapter
+//import android.widget.ListAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
 class ItemAdapter(private val context: Context,
                   //private val itemList: List<ItemData>,
                   private val onImageClick: (position: Int)->Unit,
                     private val onItemClicked: (position: Int) -> Unit ):
-    //RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
-    androidx.recyclerview.widget.ListAdapter<ItemData, ItemAdapter.ItemViewHolder>(MyItemDiffCallback()){
-    //private var itemList: List<ItemData> = listOf()
-//    fun updateList(items: List<ItemData>){
-//        this.itemList = items
-//        notifyDataSetChanged()
-//    }
-//
-//    fun updateListWithRemovePosition(items: List<ItemData>, position: Int){
-//        this.itemList = itemList
-//        notifyItemRemoved(position)
-//        notifyItemRangeChanged(position,itemCount)
-//    }
+  ListAdapter<ItemData, RecyclerView.ViewHolder>(MyItemDiffCallback()){
     class MyItemDiffCallback : DiffUtil.ItemCallback<ItemData>() {
         override fun areItemsTheSame(oldItem: ItemData, newItem: ItemData): Boolean {
             return oldItem.text == newItem.text
@@ -38,43 +28,46 @@ class ItemAdapter(private val context: Context,
             return oldItem == newItem
         }
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val itemView =
-            LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
-        return ItemViewHolder(itemView)
-    }
-
-    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        //val currentItem = itemList[position]
-        val currentItem = getItem(position)
-        holder.avatarImageView.setImageResource(currentItem.avatarResId)
-        holder.textTextView.text = currentItem.text
-
-        holder.avatarImageView.setOnClickListener{
-            //onImageClick.invoke(position)
-            onImageClick.invoke(holder.adapterPosition)
-            //Toast.makeText(holder.itemView.context, "Cleked on image ${currentItem.text}", Toast.LENGTH_SHORT).show()
-        }
-
-        holder.textTextView.setOnClickListener{
-           // removeItem(position)
-            onItemClicked.invoke(holder.adapterPosition)
-        }
-    }
-
-//    private fun removeItem(position: Int){
-//        (itemList as MutableList<ItemData>).removeAt(position)
-//        //notifyItemRemoved(position)
-//        notifyDataSetChanged()
-//    }
-
-//    override fun getItemCount(): Int {
-//        return itemList.size
-//    }
-
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val avatarImageView: ImageView = itemView.findViewById(R.id.avatarImageViewer)
         val textTextView: TextView = itemView.findViewById(R.id.textView)
+    }
+    inner class GroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val textTextView: TextView = itemView.findViewById(R.id.textView)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return  when(getItem(position).type){
+            ItemType.USER -> R.layout.list_item
+            ItemType.GROUP -> R.layout.group_item
+        }
+    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if(viewType==R.layout.list_item){
+            ItemViewHolder(LayoutInflater.from(parent.context).inflate(viewType, parent, false))
+        }else{
+            GroupViewHolder(LayoutInflater.from(parent.context).inflate(viewType, parent, false))
+        }
+    }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val currentItem = getItem(position)
+        when(currentItem.type){
+            ItemType.USER -> {
+                holder as ItemViewHolder
+                holder.avatarImageView.setImageResource(currentItem.avatarResId!!)
+                holder.textTextView.text = currentItem.text
+                holder.avatarImageView.setOnClickListener{
+                    onImageClick.invoke(holder.adapterPosition)
+                }
+                holder.textTextView.setOnClickListener{
+                    onItemClicked.invoke(holder.adapterPosition)
+                }
+            }
+            ItemType.GROUP ->{
+                holder as GroupViewHolder
+                holder.textTextView.text = currentItem.text
+            }
+        }
     }
 }
 

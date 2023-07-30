@@ -55,10 +55,16 @@ class MainActivity : AppCompatActivity() {
 
 fun generateListOf100Elements(): List<ItemData> {
     val itemList = mutableListOf<ItemData>()
-    for (i in 1..100){
-        val avatarResID = if (i%2==0) R.drawable.ic_android_black_24dp else R.drawable.baseline_aod_24
-        val name = "Name$i"
-        itemList.add(ItemData(avatarResID,name))
+    var count = 0
+    for (i in 1..10) {
+        itemList.add(ItemData(ItemType.GROUP, text = "Group $i"))
+        for (j in 1..10) {
+            val avatarResID =
+                if (count % 2 == 0) R.drawable.ic_android_black_24dp else R.drawable.baseline_aod_24
+            val name = "Name$count"
+            itemList.add(ItemData(ItemType.USER, avatarResID, name))
+            count++
+        }
     }
     return itemList
 }

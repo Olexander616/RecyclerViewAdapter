@@ -19,15 +19,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//    val itemList = listOf(
-//        ItemData(R.drawable.ic_android_black_24dp, "Ann 1"),
-//        ItemData(R.drawable.baseline_aod_24, "Igor 2"),
-//        ItemData(R.drawable.baseline_aod_24, "Kate 3")
-//        // Add more items as needed
-//    )
 
     itemList = generateListOf100Elements()
-   // adapter = ItemAdapter(this, {position ->  })
 
     recyclerView = findViewById(R.id.my_recycleView)
     adapter = ItemAdapter(this,
@@ -47,8 +40,6 @@ class MainActivity : AppCompatActivity() {
         val updateList = itemList.toMutableList()
         updateList.removeAt(position)
         this.itemList = updateList
-        //adapter.updateListWithRemovePosition(updateList,position)
-        //adapter.notifyDataSetChanged()
         adapter.submitList(itemList)
     }
 }

@@ -21,7 +21,7 @@ class ItemAdapter(private val context: Context,
   ListAdapter<ItemData, RecyclerView.ViewHolder>(MyItemDiffCallback()){
     class MyItemDiffCallback : DiffUtil.ItemCallback<ItemData>() {
         override fun areItemsTheSame(oldItem: ItemData, newItem: ItemData): Boolean {
-            return oldItem.text == newItem.text
+            return oldItem == newItem
         }
 
         override fun areContentsTheSame(oldItem: ItemData, newItem: ItemData): Boolean {
@@ -37,9 +37,12 @@ class ItemAdapter(private val context: Context,
     }
 
     override fun getItemViewType(position: Int): Int {
-        return  when(getItem(position).type){
-            ItemType.USER -> R.layout.list_item
-            ItemType.GROUP -> R.layout.group_item
+//        return  when(getItem(position).type){
+//            ItemType.USER -> R.layout.list_item
+//            ItemType.GROUP -> R.layout.group_item
+        return  when(getItem(position)){
+            is ItemData.UserType -> R.layout.list_item
+            is ItemData.GroupType -> R.layout.group_item
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -51,10 +54,10 @@ class ItemAdapter(private val context: Context,
     }
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentItem = getItem(position)
-        when(currentItem.type){
-            ItemType.USER -> {
+        when(currentItem){
+            is ItemData.UserType -> {
                 holder as ItemViewHolder
-                holder.avatarImageView.setImageResource(currentItem.avatarResId!!)
+                holder.avatarImageView.setImageResource(currentItem.avatarResId)
                 holder.textTextView.text = currentItem.text
                 holder.avatarImageView.setOnClickListener{
                     onImageClick.invoke(holder.adapterPosition)
@@ -63,9 +66,9 @@ class ItemAdapter(private val context: Context,
                     onItemClicked.invoke(holder.adapterPosition)
                 }
             }
-            ItemType.GROUP ->{
+            is ItemData.GroupType ->{
                 holder as GroupViewHolder
-                holder.textTextView.text = currentItem.text
+                holder.textTextView.text = currentItem.groupName
             }
         }
     }
